@@ -13,6 +13,7 @@ app = FastAPI(docs_url=None,
 try:
     app.mount("/static", StaticFiles(directory=f"{pathlib.Path.cwd()}/static"), name="static")
 except:
+    # 这个地方不太好，应当抛出异常
     pass
 
 @app.get('/docs', include_in_schema=False)
@@ -113,6 +114,11 @@ def startup_callback_init_data_sync():
 
 
 
-
+# 注意下面的写法，不是返回了这个 Python 文件，而是 FastAPI 创建的对象
+"""
+app = FastAPI(docs_url=None,
+              title="XX预约挂号系统",
+              description="可以通过关注微信公众号，在公众号内进行预约挂号的系统")
+"""
 def creat_app():
     return app

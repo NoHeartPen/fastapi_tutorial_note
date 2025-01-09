@@ -24,7 +24,11 @@ def setup_ext_loguru(log_pro_path: str = None):
     '''
     import os
     if not log_pro_path:
+        # Q：abspath 的区别？
         log_pro_path = os.path.split(os.path.realpath(__file__))[0]
+        # A： 返回路径 path 的真实绝对路径，即解析所有符号链接（symlinks）。
+        # 如果路径中有符号链接，它会跟踪并返回实际指向的文件或目录的路径。
+        # abspath 只是将相对路径转换为绝对路径，但不解析符号链接。
     # 定义info_log文件名称
     log_file_path = os.path.join(log_pro_path, 'log/info_{time:YYYYMMDD}.log')
     # 定义err_log文件名称
@@ -32,18 +36,20 @@ def setup_ext_loguru(log_pro_path: str = None):
 
     from sys import stdout
     LOGURU_FORMAT: str = '<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | <level>{level: <16}</level> | <bold>{message}</bold>'
-    # 这句话很关键避免多次的写入我们的日志
+    # 这句话很关键，避免多次的写入我们的日志
+    # Q： sink 的作用？
     logger.configure(handlers=[{'sink': stdout, 'format': LOGURU_FORMAT}])
+    # A： sink: stdout：这里，sink 设置为 stdout，表示日志消息将被输出到标准输出（控制台）。
     # 这个也可以启动避免多次的写入的作用，但是我们的 app:register_logger:40 -无法输出
     # logger.remove()
     # 错误日志不需要压缩
     format = " {time:YYYY-MM-DD HH:mm:ss:SSS} | thread_id:{thread.id} thread_name:{thread.name} | {level} |\n {message}"
-    # 使用 rotation 参数实现定时创建 log 文件,可以实现每天 0 点新创建一个 log 文件输出了 enqueue=True表示 开启异步写入
+    # 使用 rotation 参数实现定时创建 log 文件，可以实现每天 0 点新创建一个 log 文件输出了 enqueue=True 表示 开启异步写入
     logger.add(err_log_file_path, format=format, rotation='00:00', encoding='utf-8', level='ERROR', enqueue=True)  # Automatically rotate too big file
     # 对应不同的格式
-    format2 = " {time:YYYY-MM-DD HH:mm:ss:SSS} | thread_id:{thread.id} thread_name:{thread.name} | {level} | {message}"
-    # 使用 rotation 参数实现定时创建 log 文件,可以实现每天 0 点新创建一个 log 文件输出了 enqueue=True表示 开启异步写入
-    logger.add(log_file_path, format=format2, rotation='00:00', encoding='utf-8', level='INFO', enqueue=True)  # Automatically rotate too big file
+    other_format = " {time:YYYY-MM-DD HH:mm:ss:SSS} | thread_id:{thread.id} thread_name:{thread.name} | {level} | {message}"
+    # 使用 rotation 参数实现定时创建 log 文件,可以实现每天 0 点新创建一个 log 文件输出了 enqueue=True 表示 开启异步写入
+    logger.add(log_file_path, format=other_format, rotation='00:00', encoding='utf-8', level='INFO', enqueue=True)  # Automatically rotate too big file
 
 
 
@@ -72,7 +78,7 @@ async def async_trace_add_log_record(event_type='', msg={}, remarks=''):
             'remarks': remarks,
 
         }
-        #  为少少相关记录，删除不必要的为空的日志内容信息，
+        #  为减少相关记录，删除不必要的、为空的日志内容信息
         if not remarks:
             log.pop('remarks')
         if not msg:
@@ -100,7 +106,10 @@ class LogerMiddleware:
         self.app = app
         self.is_record_useragent = is_record_useragent
         self.is_record_headers = is_record_headers
+        # Q： nesss_access_heads_keys 的意思？
         self.nesss_access_heads_keys = nesss_access_heads_keys
+        # 这个部分不太常见，可能是某个具体项目或领域的缩写。
+        # 它可能是 "necessary" 或类似词的缩写，表示 "必要的" 或 "需要的"。
         self.ignore_url = ignore_url
         setup_ext_loguru(log_pro_path)
 

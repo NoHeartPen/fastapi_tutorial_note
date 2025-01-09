@@ -1,6 +1,9 @@
+# TODO 这个的作用是？
 def bind_contextvar(contextvar):
     class ContextVarBind:
+        # Q： 这个() 是表示？
         __slots__ = ()
+        # A：__slots__ 被定义为空元组，意味着该类的实例不允许有任何属性。
 
         def __getattr__(self, name):
             return getattr(contextvar.get(), name)
