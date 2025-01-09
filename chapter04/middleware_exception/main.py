@@ -10,7 +10,7 @@ app = FastAPI()
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
-    # 故意直接的抛出异常tr
+    # 故意直接的抛出异常
 
     raise CustomException(message='抛出自定义异常')
 
@@ -24,8 +24,10 @@ class CustomException(Exception):
 
 
 @app.exception_handler(Exception)
+# exc 参数是 Exception 类型
 async def custom_exception_handler(request: Request, exc: Exception):
     print("触发全局自定义Exception")
+    # 这里进一步判断 exc 是不是自定义的 CustomException 类型
     if isinstance(exc,CustomException):
         print("触发全局自定义CustomException")
     return JSONResponse(content={"message": exc.message}, )

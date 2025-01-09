@@ -11,6 +11,7 @@ from starlette.responses import JSONResponse
 
 app = FastAPI()
 
+# 在这里处理下面抛出的 HTTPException
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(status_code=exc.status_code, content=exc.detail, headers=exc.headers)
@@ -18,6 +19,7 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 @app.get("/http_exception")
 async def http_exception(action_scopes: str = Query(default='admin')):
     if action_scopes == 'admin':
+        # 这个地方抛出异常后，由上面的 http_exception_handler 进行处理
         raise HTTPException(status_code=403,
                             headers={"x-auth": "NO AUTH!"},
                             detail={
