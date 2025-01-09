@@ -192,4 +192,4 @@ async def digest(request: Request, auth: HTTPAuthorizationCredentials = Depends(
 if __name__ == '__main__':
     import uvicorn
 
-    uvicorn.run('main2:app', host="127.0.0.1", port=8000, debug=True, reload=True)
+    uvicorn.run('main:app', host="127.0.0.1", port=8000, debug=True, reload=True)
