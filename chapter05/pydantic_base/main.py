@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 from typing import Union, Optional, List
 
+# Q： 下面的 \ 写法作用是？
 from pydantic import BaseModel, \
     DirectoryPath, \
     IPvAnyAddress, \
@@ -9,6 +10,7 @@ from pydantic import BaseModel, \
     EmailStr, \
     NameEmail, SecretStr, SecretBytes, ValidationError, HttpUrl
 from datetime import date
+# A：\ 使得导入语句跨越多行，从而避免了单行代码过长的情况。
 
 
 class Person(BaseModel):
