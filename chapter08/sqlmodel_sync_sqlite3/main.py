@@ -6,11 +6,34 @@ engine = create_engine("sqlite:///user.db")
 from sqlmodel import Field, SQLModel
 
 class Users(SQLModel, table=True):
+    # Q： 主键为什么要被设为 Optional 呢？
     id: Optional[int] = Field(default=None, primary_key=True)
+    # A： 创建用户的时候不需要提供这个地方的数据，所以设为了可选
     name:str
     nikename:str
     password :str
     email:str
+
+"""
+# Q：下面的是 SQlAlachemy 的写法，和上面的相比，最明显的就是这个少了 autoincrement=True 和 Column(String(32))
+class User(Base):
+    # 指定本类映射到users表
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String(20))
+    nikename = Column(String(32))
+    password = Column(String(32))
+    email = Column(String(50))
+# A：SQLModel默认会把主键设成 autoincrement=True
+
+# 如果需要指明 Column(String(32)) 这样类似的存储限制，可以用下面的写法
+class Users(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(..., max_length=20)  # 限制 name 字段最大长度为 20
+    nikename: str = Field(..., max_length=32)
+    password: str = Field(..., max_length=32)
+    email: str = Field(..., max_length=50)
+"""
 
 from sqlmodel import Session,select
 with Session(engine) as session:
