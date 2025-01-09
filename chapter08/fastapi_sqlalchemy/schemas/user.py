@@ -34,6 +34,7 @@ Author = zyx
 
 from pydantic import BaseModel
 
+# schemas 的作用是？
 class UserCreate(BaseModel):
     """
     创建新用户记录时候需要传递参数信息

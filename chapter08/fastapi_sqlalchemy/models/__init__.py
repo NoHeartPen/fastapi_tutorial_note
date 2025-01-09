@@ -32,3 +32,8 @@ Author = zyx
 @文件功能描述:------
 """
 from .user import *
+"""
+TODO 测试下面的推荐写法
+from .user import User
+__all__ = ['User']
+"""
