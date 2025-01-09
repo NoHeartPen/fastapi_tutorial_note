@@ -39,7 +39,8 @@ app = FastAPI(title='fastapi集成短链实战案例')
 
 @app.on_event("startup")
 async def startup_event():
-    pass
+    # TODO 下面的 pass 是不是应该删掉
+    # pass
     from db.database import async_engine, Base
     from models.model import User,ShortUrl
     async def init_create_table():
@@ -52,6 +53,7 @@ async def startup_event():
 async def shutdown_event():
     pass
 
+# 注意这个地方的 API 路由加载方式
 from api.user import router_uesr
 app.include_router(router_uesr)
 
