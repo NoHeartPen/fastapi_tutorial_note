@@ -15,11 +15,17 @@ class DoctorScheduling(Base):
     nsnumstock = Column(Integer, comment='号源库存数')
     nsindex = Column(Text, unique=True, server_default=text("''::text"), comment='号源编号')
     dnotime = Column(Date, comment='排班日期，年-月-日')
+    # Q："''::text" 的意思是？
     tiemampmstr = Column(Text, server_default=text("''::text"), comment='号源时段字符串显示')
+    # A： ''::text 是 PostgreSQL 中的一个类型转换表达式。
+    # 它的含义是将空字符串 '' 强制转换为 text 类型。
+    # 如果没有提供具体值，数据库会将该字段的默认值设置为一个空字符串。
     ampm = Column(Text, server_default=text("''::text"), comment='医生工作日：上午 还是 下午')
     create_time = Column(TIMESTAMP(precision=0), server_default=text("now()"), comment='创建时间')
     enable = Column(Integer, comment='是否可用（1：是 0 否）')
+    # Q：precision=6 精度是6？具体的例子？
     tiempm = Column(TIMESTAMP(precision=6), comment='医生工作日：号源时段(年-月-日 时：分)')
+    # 时间戳的精度为微秒级别，即保留小数点后 6 位（微秒）。 2025-01-10 12:30:45.123456，其中 123456 就是微秒部分。
 
 class DoctorSubscribeinfo(Base):
     __tablename__ = 'doctor_subscribeinfo'
@@ -29,6 +35,7 @@ class DoctorSubscribeinfo(Base):
     dno = Column(Text, nullable=False, index=True, server_default=text("''::text"), comment='所属医生编号')
     orderid = Column(Text, index=True, server_default=text("''::text"), comment='订单编号')
     nsindex = Column(Text, server_default=text("''::text"), comment='订单编号')
+    # 注意这个地方的订单状态
     statue = Column(Integer, server_default=text("1"), comment='订单状态（1:订单就绪，还没支付 2：已支付成功 3：取消订单')
     visitday = Column(Text, server_default=text("''::text"), comment='就诊日期')
     visittime = Column(Text, server_default=text("''::text"), comment='就诊时段')
@@ -40,6 +47,7 @@ class DoctorSubscribeinfo(Base):
     visit_uage = Column(Text, server_default=text("''::text"), comment='就诊人年龄')
     visit_statue = Column(Integer, server_default=text("1"), comment='订单所属-就诊状态（1：待就诊 2：已就诊）')
     create_time = Column(TIMESTAMP(precision=0), server_default=text("now()"), comment='创建时间')
+    # 注意这个地方的的支付模块记录了回调事件
     notify_callback_time = Column(TIMESTAMP(precision=0), comment='支付回调时间')
 
 
